@@ -17,7 +17,7 @@ import javax.swing.JPanel;
  */
 class PongPanel extends JPanel {
 
-    private ArrayList<Pallo> pallot = new ArrayList<>();
+    private ArrayList<Pallo> pallot = new ArrayList();
     private int maila1y = 2000;
     private int maila1x = 160;
     private int maila2y = 2000;
@@ -33,6 +33,7 @@ class PongPanel extends JPanel {
 
     public PongPanel() {
         pallot.add(new Pallo(3200, 2400, (int) (25 * Math.pow(-1.0, random.nextInt(2))), (int) (25 * Math.pow(-1.0, random.nextInt(2)))));
+
     }
 
     @Override
@@ -55,13 +56,18 @@ class PongPanel extends JPanel {
 
     }
 
-    private void piirraPallo(Graphics g) throws ConcurrentModificationException {
+    private void piirraPallo(Graphics g) {
         if (pallot.isEmpty()) {
             pallot.add(new Pallo(3200, 2400, (int) (35 * Math.pow(-1.0, random.nextInt(2))), (int) (random.nextInt(40) - 20)));
         }
-        for (Pallo pallo : pallot) {
-            g.fillRect(pallo.getX() / 10, pallo.getY() / 10, 8, 8);
+        try {
+            for (Pallo pallo : pallot) {
+                g.fillRect(pallo.getX() / 10, pallo.getY() / 10, 8, 8);
+            }
+        } catch (ConcurrentModificationException e) {
+            return;
         }
+
 
     }
 

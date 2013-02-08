@@ -24,6 +24,7 @@ class PongFrame extends JFrame implements KeyListener {
         this.paneeli = paneeli;
         add(paneeli);
         addKeyListener(this);
+
     }
 
     public void paivitaPaneeli() {
