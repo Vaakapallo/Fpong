@@ -4,6 +4,7 @@
  */
 package fpong;
 
+import java.awt.Color;
 import java.util.Random;
 
 /**
@@ -16,13 +17,25 @@ public class Pallo implements Comparable<Pallo> {
     private int y;
     private int deltax;
     private int deltay;
+    private int koko;
     private Random random = new Random();
+    private Color vari;
 
-    public Pallo(int x, int y, int deltax, int deltay) {
+    public Pallo(int x, int y, int deltax, int deltay, int koko) {
         this.x = x;
         this.y = y;
         this.deltax = deltax;
         this.deltay = deltay;
+        this.vari = Color.getHSBColor((float) (System.currentTimeMillis() % 2000) / 2000, 1, (float) 0.5);
+        this.koko = koko;
+    }
+
+    public int getKoko() {
+        return koko;
+    }
+
+    public Color getVari() {
+        return vari;
     }
 
     public int getX() {
@@ -108,7 +121,6 @@ public class Pallo implements Comparable<Pallo> {
         }
         return true;
     }
-
 
     @Override
     public int compareTo(Pallo o) {
