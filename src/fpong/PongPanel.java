@@ -33,7 +33,6 @@ class PongPanel extends JPanel {
 
     public PongPanel() {
         pallot.add(new Pallo(3200, 2400, (int) (25 * Math.pow(-1.0, random.nextInt(2))), (int) (25 * Math.pow(-1.0, random.nextInt(2))), 20));
-
     }
 
     @Override
@@ -124,8 +123,6 @@ class PongPanel extends JPanel {
             }
             poistettavat.clear();
         }
-
-
     }
 
     void liikutaMailoja(boolean maila1ylos, boolean maila1alas, boolean maila2ylos, boolean maila2alas) {
