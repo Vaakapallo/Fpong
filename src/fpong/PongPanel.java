@@ -17,7 +17,7 @@ import javax.swing.JPanel;
  */
 class PongPanel extends JPanel {
 
-    private ArrayList<Pallo> pallot = new ArrayList<>();
+    private ArrayList<Pallo> pallot = new ArrayList();
     private int maila1y = 2000;
     private int maila1x = 160;
     private int maila2y = 2000;
@@ -28,20 +28,24 @@ class PongPanel extends JPanel {
     private int score1 = 0;
     private int score2 = 0;
     private int mailanSyvyys = 80;
-    private int palloja;
+    private int palloja = 1;
     private Random random = new Random();
 
     public PongPanel() {
-        pallot.add(new Pallo(3200, 2400, (int) (25 * Math.pow(-1.0, random.nextInt(2))), (int) (25 * Math.pow(-1.0, random.nextInt(2)))));
+        pallot.add(new Pallo(3200, 2400, (int) (25 * Math.pow(-1.0, random.nextInt(2))), (int) (25 * Math.pow(-1.0, random.nextInt(2))), 20));
+
     }
 
     @Override
     public void paintComponent(Graphics g) {
         g.setColor(Color.black);
         g.fillRect(0, 0, 640, 480);
-        g.setColor(Color.white);
+//        g.setColor(Color.white);
+        piirraPallot(g);
+        g.setColor(Color.getHSBColor((float) (System.currentTimeMillis() % 2000) / 2000, 1, (float) 0.5));
         piirraMailat(g);
-        piirraPallo(g);
+
+        g.setColor(Color.white);
         g.drawString(score1 + ":" + score2, 320, 20);
         palloja = pallot.size();
         g.drawString("palloja: " + palloja, 320, 40);
@@ -50,19 +54,26 @@ class PongPanel extends JPanel {
     }
 
     private void piirraMailat(Graphics g) {
-        g.fillRect(maila1x / 10, maila1y / 10, 8, mailanKorkeus / 10);
-        g.fillRect(maila2x / 10, maila2y / 10, 8, mailanKorkeus / 10);
-
+        g.drawRect(maila1x / 10, maila1y / 10, palloinKoko(), mailanKorkeus / 10);
+        g.drawRect(maila2x / 10, maila2y / 10, palloinKoko(), mailanKorkeus / 10);
     }
 
-    private void piirraPallo(Graphics g) throws ConcurrentModificationException {
+    private void piirraPallot(Graphics g) {
         if (pallot.isEmpty()) {
-            pallot.add(new Pallo(3200, 2400, (int) (35 * Math.pow(-1.0, random.nextInt(2))), (int) (random.nextInt(40) - 20)));
+            pallot.add(new Pallo(3200, 2400, (int) (35 * Math.pow(-1.0, random.nextInt(2))), (int) (random.nextInt(40) - 20), palloinKoko()));
         }
-        for (Pallo pallo : pallot) {
-            g.fillRect(pallo.getX() / 10, pallo.getY() / 10, 8, 8);
+        try {
+            for (Pallo pallo : pallot) {
+                g.setColor(pallo.getVari());
+                g.fillRect(pallo.getX() / 10, pallo.getY() / 10, pallo.getKoko(), pallo.getKoko());
+            }
+        } catch (ConcurrentModificationException e) {
+            return;
         }
+    }
 
+    public int palloinKoko() {
+        return Math.max(((30000 - palloja) / 1500), 1);
     }
 
     public void liikuta(boolean maila1ylos, boolean maila1alas, boolean maila2ylos, boolean maila2alas) throws InterruptedException {
@@ -83,13 +94,13 @@ class PongPanel extends JPanel {
                 if (pallo.getY() > maila1y && pallo.getY() < maila1y + mailanKorkeus) {
                     pallo.setdX(Math.abs(pallo.getdX()) + random.nextInt(10));
                     pallo.setdY(maila1d);
-                    lisattavat.add(new Pallo(maila1x + 80, pallo.getY(), pallo.getdX(), (int) (pallo.getdY() - Math.random() * pallo.getdY())));
+                    lisattavat.add(new Pallo(maila1x + 80, pallo.getY(), pallo.getdX(), (int) (pallo.getdY() - Math.random() * pallo.getdY()), palloinKoko()));
                 }
             } else if (pallo.getX() > maila2x - 80 && pallo.getX() < maila2x + mailanSyvyys) {
                 if (pallo.getY() > maila2y && pallo.getY() < maila2y + mailanKorkeus) {
                     pallo.setdX(Math.abs(pallo.getdX() + random.nextInt(10)) * -1);
                     pallo.setdY(maila2d);
-                    lisattavat.add(new Pallo(maila2x - 80, pallo.getY(), pallo.getdX(), (int) (pallo.getdY() - Math.random() * pallo.getdY())));
+                    lisattavat.add(new Pallo(maila2x - 80, pallo.getY(), pallo.getdX(), (int) (pallo.getdY() - Math.random() * pallo.getdY()), palloinKoko()));
                 }
             }
             if (pallo.getX() > 6400) {
